@@ -21,6 +21,6 @@ func postList(resolve core.Resolve) http.HandlerFunc {
 			httpx.ErrorResponse(w, 400, err)
 			return
 		}
-		httpx.JSONResponse(w, 200, posts)
+		httpx.JSONResponse(w, 200, toPostDTOList(posts))
 	})
 }
