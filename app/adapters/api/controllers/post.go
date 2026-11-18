@@ -7,7 +7,7 @@ import (
 	"simple-server-template/app/modules/blog/contract"
 )
 
-func RegisterPostController(router *http.ServeMux, resolve core.Resolve) {
+func RegisterPostController(router *httpx.Mux, resolve core.Resolve) {
 	router.Handle("GET /api/posts", postList(resolve))
 }
 
