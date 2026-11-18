@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"fmt"
 	"simple-server-template/app/core"
 
 	"github.com/spf13/cobra"
@@ -10,7 +11,7 @@ func NewCli() *cobra.Command {
 	var app *Instance
 
 	root := &cobra.Command{
-		Use:           "server",
+		Use:           "blogging",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -26,4 +27,13 @@ func NewCli() *cobra.Command {
 	)
 
 	return root
+}
+
+func RunCLI() int {
+	root := NewCli()
+	if err := root.Execute(); err != nil {
+		fmt.Println(err)
+		return 1
+	}
+	return 0
 }

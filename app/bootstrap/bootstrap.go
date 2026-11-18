@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"simple-server-template/app/core"
@@ -34,6 +35,12 @@ func New() (*Instance, error) {
 	modules, err := buildModules(buildModulesDeps{log, clk})
 	if err != nil {
 		panic(err)
+	}
+
+	for _, m := range modules {
+		if err := m.Register(app); err != nil {
+			return nil, fmt.Errorf("register module %s: %w", m.Name(), err)
+		}
 	}
 
 	// stop registering handlers and listeners

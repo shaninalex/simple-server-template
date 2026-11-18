@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"os"
+	"simple-server-template/app/bootstrap"
+)
 
 func main() {
-	fmt.Println("Working...")
+	os.Exit(bootstrap.RunCLI())
 }
