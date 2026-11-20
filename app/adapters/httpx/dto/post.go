@@ -1,4 +1,4 @@
-package controllers
+package dto
 
 import (
 	"simple-server-template/app/modules/blog/contract"
@@ -14,7 +14,7 @@ type PostDTO struct {
 	Published time.Time `json:"published"`
 }
 
-func toPostDTO(p contract.PostView) PostDTO {
+func ToPostDTO(p contract.PostView) PostDTO {
 	return PostDTO{
 		ID:        p.ID,
 		Title:     p.Title,
@@ -24,10 +24,10 @@ func toPostDTO(p contract.PostView) PostDTO {
 	}
 }
 
-func toPostDTOList(posts []contract.PostView) []PostDTO {
+func ToPostDTOList(posts []contract.PostView) []PostDTO {
 	dtos := make([]PostDTO, len(posts))
 	for i, p := range posts {
-		dtos[i] = toPostDTO(p)
+		dtos[i] = ToPostDTO(p)
 	}
 	return dtos
 }

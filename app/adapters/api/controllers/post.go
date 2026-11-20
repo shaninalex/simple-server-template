@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"simple-server-template/app/adapters/httpx"
+	"simple-server-template/app/adapters/httpx/dto"
 	"simple-server-template/app/core"
 	"simple-server-template/app/modules/blog/contract"
 )
@@ -21,6 +22,6 @@ func postList(resolve core.Resolve) http.HandlerFunc {
 			httpx.ErrorResponse(w, 400, err)
 			return
 		}
-		httpx.JSONResponse(w, 200, toPostDTOList(posts))
+		httpx.JSONResponse(w, 200, dto.ToPostDTOList(posts))
 	})
 }
