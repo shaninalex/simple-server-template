@@ -15,7 +15,7 @@ func NewPostDetail(source domain.PostSource) *PostDetail {
 }
 
 func (s *PostDetail) Handle(ctx context.Context, q contract.PostDetail) (contract.PostView, error) {
-	post, err := s.source.Get(ctx, q.ID.String())
+	post, err := s.source.Get(ctx, q.ID)
 	if err != nil {
 		return contract.PostView{}, err
 	}

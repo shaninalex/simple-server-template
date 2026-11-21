@@ -88,7 +88,7 @@ var _ = Describe("Source", func() {
 
 	Describe("Get", func() {
 		It("returns the post by id", func() {
-			post, err := source.Get(context.Background(), "550e8400-e29b-41d4-a716-446655440001")
+			post, err := source.Get(context.Background(), uuid.MustParse("550e8400-e29b-41d4-a716-446655440001"))
 			Expect(err).NotTo(HaveOccurred())
 			Expect(post.ID).To(Equal(uuid.MustParse("550e8400-e29b-41d4-a716-446655440001")))
 			Expect(post.Title).To(Equal("Getting Started with Go"))
@@ -99,13 +99,13 @@ var _ = Describe("Source", func() {
 			created, err := source.Create(context.Background(), domain.Post{Title: "Fresh"})
 			Expect(err).NotTo(HaveOccurred())
 
-			post, err := source.Get(context.Background(), created.ID.String())
+			post, err := source.Get(context.Background(), created.ID)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(post.Title).To(Equal("Fresh"))
 		})
 
 		It("reports a missing post as not found", func() {
-			_, err := source.Get(context.Background(), uuid.New().String())
+			_, err := source.Get(context.Background(), uuid.New())
 			Expect(errs.KindOf(err)).To(Equal(errs.KindNotFound))
 		})
 	})

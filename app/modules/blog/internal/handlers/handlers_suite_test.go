@@ -25,7 +25,7 @@ func TestHandlers(t *testing.T) {
 // fakeSource records what the handler sends and returns a canned result.
 type fakeSource struct {
 	created   domain.Post
-	requested string
+	requested uuid.UUID
 	result    domain.Post
 	err       error
 }
@@ -34,7 +34,7 @@ func (f *fakeSource) List(context.Context, int, int) ([]domain.Post, error) {
 	return nil, nil
 }
 
-func (f *fakeSource) Get(_ context.Context, id string) (domain.Post, error) {
+func (f *fakeSource) Get(_ context.Context, id uuid.UUID) (domain.Post, error) {
 	f.requested = id
 	return f.result, f.err
 }
@@ -129,7 +129,7 @@ var _ = Describe("PostDetail", func() {
 	It("asks the source for the requested id", func() {
 		_, err := handler.Handle(context.Background(), contract.PostDetail{ID: id})
 		Expect(err).NotTo(HaveOccurred())
-		Expect(source.requested).To(Equal(id.String()))
+		Expect(source.requested).To(Equal(id))
 	})
 
 	It("maps the post to a view", func() {
