@@ -29,7 +29,7 @@ func serveCmd(instance func() *Instance) *cobra.Command {
 			router := httpx.NewServeMux()
 			router.Use(middlewares.Logging)
 			router.Use(metrics)
-			router.Use(middlewares.Recovery)
+			router.Use(middlewares.Recovery(app.Log))
 			api.RegisterAPIControllers(router, resolve)
 			web.RegisterWebRoutes(router, resolve)
 

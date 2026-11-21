@@ -2,6 +2,7 @@ package middlewares_test
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -78,7 +79,7 @@ var _ = Describe("Metrics", func() {
 
 		mux = httpx.NewServeMux()
 		mux.Use(metrics)
-		mux.Use(middlewares.Recovery)
+		mux.Use(middlewares.Recovery(slog.New(slog.NewTextHandler(GinkgoWriter, nil))))
 	})
 
 	It("records duration with method, route and status", func() {
