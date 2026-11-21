@@ -29,5 +29,14 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      # ginkgo CLI version is pinned by the `tool` directive in go.mod
       - name: Test
-        run: go test -race -count=1 ./...
+        run: >-
+          go tool ginkgo -r
+          --race
+          --randomize-all
+          --fail-on-pending
+          --fail-on-empty
+          --keep-going
+          --github-output
+          ./app
