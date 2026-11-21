@@ -10,15 +10,11 @@ import (
 
 const maxPostListLimit = 100
 
-type PostSource interface {
-	List(ctx context.Context, limit, offset int) ([]domain.Post, error)
-}
-
 type PostList struct {
-	source PostSource
+	source domain.PostSource
 }
 
-func NewPostList(source PostSource) *PostList {
+func NewPostList(source domain.PostSource) *PostList {
 	return &PostList{source: source}
 }
 
@@ -40,14 +36,4 @@ func (s *PostList) Handle(ctx context.Context, query contract.PostList) ([]contr
 		views[i] = toPostView(p)
 	}
 	return views, nil
-}
-
-func toPostView(p domain.Post) contract.PostView {
-	return contract.PostView{
-		ID:        p.ID,
-		Title:     p.Title,
-		Content:   p.Content,
-		Thumbnail: p.Thumbnail,
-		Published: p.Published,
-	}
 }

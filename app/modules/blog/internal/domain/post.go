@@ -8,6 +8,7 @@ import (
 type Post struct {
 	ID        uuid.UUID
 	AuthorID  uuid.UUID
+	Category  string
 	Title     string
 	Content   string
 	Thumbnail string

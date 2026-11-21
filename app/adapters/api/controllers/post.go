@@ -41,6 +41,6 @@ func PostCreate(resolve core.Resolve) http.HandlerFunc {
 			httpx.ErrorResponse(w, httpx.StatusFromError(err), err)
 			return
 		}
-		httpx.JSONResponse(w, 200, post)
+		httpx.JSONResponse(w, http.StatusCreated, dto.ToPostDTO(post))
 	})
 }

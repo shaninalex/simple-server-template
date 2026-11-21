@@ -7,9 +7,6 @@ import (
 	"time"
 )
 
-// Config - external settings of the application instance.
-// Production values come from the environment (see LoadConfig),
-// tests build it directly, e.g. with the mock server URL.
 type Config struct {
 	PostsAPI RemoteAPIConfig
 }
@@ -25,10 +22,6 @@ const (
 	envPostsAPITimeout = "POSTS_API_TIMEOUT"
 )
 
-// LoadConfig reads Config from environment variables.
-//
-//	POSTS_API_URL      required, base URL of the posts API
-//	POSTS_API_TIMEOUT  optional, Go duration (default 5s)
 func LoadConfig() (Config, error) {
 	cfg := Config{
 		PostsAPI: RemoteAPIConfig{

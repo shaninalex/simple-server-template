@@ -37,7 +37,7 @@ func New(d Deps) *Module {
 		postList: handlers.NewPostList(posts),
 
 		// commands
-		postCreate: handlers.NewCreatePost(posts),
+		postCreate: handlers.NewCreatePost(posts, d.Clock),
 	}
 }
 
