@@ -1,14 +1,21 @@
 package bootstrap
 
 import (
+	"context"
 	"fmt"
-	"simple-server-template/app/core"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
-func NewCli() *cobra.Command {
+const instanceShutdownTimeout = 10 * time.Second
+
+func NewCli() (*cobra.Command, func() *Instance) {
 	var app *Instance
+	instance := func() *Instance { return app }
 
 	root := &cobra.Command{
 		Use:           "blogging",
@@ -24,19 +31,34 @@ func NewCli() *cobra.Command {
 		},
 	}
 
-	resolve := core.Resolve(func() *core.App { return app.Core })
 	root.AddCommand(
-		serveCmd(resolve),
+		serveCmd(instance),
 	)
 
-	return root
+	return root, instance
 }
 
 func RunCLI() int {
-	root := NewCli()
-	if err := root.Execute(); err != nil {
-		fmt.Println(err)
-		return 1
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	root, instance := NewCli()
+	runErr := root.ExecuteContext(ctx)
+
+	stop()
+
+	code := 0
+	if runErr != nil {
+		fmt.Fprintln(os.Stderr, runErr)
+		code = 1
 	}
-	return 0
+	if app := instance(); app != nil {
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), instanceShutdownTimeout)
+		defer cancel()
+		if err := app.Shutdown(shutdownCtx); err != nil {
+			fmt.Fprintln(os.Stderr, "shutdown:", err)
+			code = 1
+		}
+	}
+	return code
 }

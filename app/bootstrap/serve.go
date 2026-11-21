@@ -1,34 +1,43 @@
 package bootstrap
 
 import (
-	"log"
-	"net/http"
 	"simple-server-template/app/adapters/api"
 	"simple-server-template/app/adapters/httpx"
 	"simple-server-template/app/adapters/httpx/middlewares"
 	"simple-server-template/app/adapters/web"
 	"simple-server-template/app/core"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
-func serveCmd(resolve core.Resolve) *cobra.Command {
-	cmd := &cobra.Command{
+const httpShutdownTimeout = 15 * time.Second
+
+func serveCmd(instance func() *Instance) *cobra.Command {
+	return &cobra.Command{
 		Use:   "serve",
 		Short: "Run http server",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			app := instance()
+			resolve := core.Resolve(func() *core.App { return app.Core })
+
 			router := httpx.NewServeMux()
 			router.Use(middlewares.Logging)
 			router.Use(middlewares.Recovery)
-
 			api.RegisterAPIControllers(router, resolve)
 			web.RegisterWebRoutes(router, resolve)
 
-			log.Println("Server started at :8080")
-			return http.ListenAndServe(":8080", router)
-			// TODO: graceful shutdown
+			main, err := httpx.Listen("main", app.Config.HTTP.Addr, router)
+			if err != nil {
+				return err
+			}
+			admin, err := httpx.Listen("admin", app.Config.HTTP.AdminAddr, app.Telemetry.AdminHandler())
+			if err != nil {
+				_ = main.Close()
+				return err
+			}
+
+			return httpx.Serve(cmd.Context(), app.Log, httpShutdownTimeout, main, admin)
 		},
 	}
-
-	return cmd
 }
