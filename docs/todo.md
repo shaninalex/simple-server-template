@@ -1,2 +1,2 @@
-[ ] - open telemetry
+[x] - metrics
 [ ] - inbox queue for commands

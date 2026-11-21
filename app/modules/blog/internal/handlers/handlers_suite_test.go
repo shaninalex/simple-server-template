@@ -7,6 +7,7 @@ import (
 	"time"
 	"uuid"
 
+	"simple-server-template/app/core/errs"
 	"simple-server-template/app/modules/blog/contract"
 	"simple-server-template/app/modules/blog/internal/domain"
 	"simple-server-template/app/modules/blog/internal/handlers"
@@ -23,13 +24,19 @@ func TestHandlers(t *testing.T) {
 
 // fakeSource records what the handler sends and returns a canned result.
 type fakeSource struct {
-	created domain.Post
-	result  domain.Post
-	err     error
+	created   domain.Post
+	requested string
+	result    domain.Post
+	err       error
 }
 
 func (f *fakeSource) List(context.Context, int, int) ([]domain.Post, error) {
 	return nil, nil
+}
+
+func (f *fakeSource) Get(_ context.Context, id string) (domain.Post, error) {
+	f.requested = id
+	return f.result, f.err
 }
 
 func (f *fakeSource) Create(_ context.Context, p domain.Post) (domain.Post, error) {
@@ -102,6 +109,61 @@ var _ = Describe("CreatePost", func() {
 
 		view, err := handler.Handle(context.Background(), contract.CreatePost{Post: input})
 		Expect(err).To(MatchError("boom"))
+		Expect(view).To(BeZero())
+	})
+})
+
+var _ = Describe("PostDetail", func() {
+	var (
+		source  *fakeSource
+		handler *handlers.PostDetail
+		id      uuid.UUID
+	)
+
+	BeforeEach(func() {
+		source = &fakeSource{}
+		handler = handlers.NewPostDetail(source)
+		id = uuid.New()
+	})
+
+	It("asks the source for the requested id", func() {
+		_, err := handler.Handle(context.Background(), contract.PostDetail{ID: id})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(source.requested).To(Equal(id.String()))
+	})
+
+	It("maps the post to a view", func() {
+		published := time.Date(2026, 11, 21, 10, 0, 0, 0, time.UTC)
+		source.result = domain.Post{
+			ID:        id,
+			AuthorID:  uuid.New(),
+			Title:     "Title",
+			Category:  "it",
+			Content:   "Content",
+			Thumbnail: "https://example.com/t.png",
+			Published: published,
+			CreatedAt: published.Add(-time.Hour),
+		}
+
+		view, err := handler.Handle(context.Background(), contract.PostDetail{ID: id})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view).To(Equal(contract.PostView{
+			ID:        source.result.ID,
+			AuthorID:  source.result.AuthorID,
+			Title:     "Title",
+			Category:  "it",
+			Content:   "Content",
+			Thumbnail: "https://example.com/t.png",
+			Published: published,
+			CreatedAt: published.Add(-time.Hour),
+		}))
+	})
+
+	It("returns the source error", func() {
+		source.err = errs.NotFound("T1", "missing")
+
+		view, err := handler.Handle(context.Background(), contract.PostDetail{ID: id})
+		Expect(errs.KindOf(err)).To(Equal(errs.KindNotFound))
 		Expect(view).To(BeZero())
 	})
 })

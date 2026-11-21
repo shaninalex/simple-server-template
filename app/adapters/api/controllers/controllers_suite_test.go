@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"simple-server-template/app/adapters/api"
 	"simple-server-template/app/adapters/api/controllers"
+	"simple-server-template/app/adapters/httpx"
 	"simple-server-template/app/adapters/httpx/dto"
 	"simple-server-template/app/bootstrap"
 	"simple-server-template/app/core"
@@ -91,6 +93,39 @@ var _ = Describe("Posts API endpoint", func() {
 
 		It("rejects unknown fields", func() {
 			Expect(post(`{"title":"t","unknown":1}`)).To(HaveHTTPStatus(http.StatusBadRequest))
+		})
+	})
+
+	Describe("GET /api/posts/{id}", func() {
+		get := func(id string) *http.Response {
+			router := httpx.NewServeMux()
+			api.RegisterAPIControllers(router, resolve)
+			ts := httptest.NewServer(router)
+			DeferCleanup(ts.Close)
+
+			res, err := http.Get(ts.URL + "/api/posts/" + id)
+			Expect(err).NotTo(HaveOccurred())
+			DeferCleanup(res.Body.Close)
+			return res
+		}
+
+		It("returns the post as DTO", func() {
+			res := get("550e8400-e29b-41d4-a716-446655440001")
+			Expect(res).To(HaveHTTPStatus(http.StatusOK))
+
+			var post dto.PostDTO
+			Expect(json.NewDecoder(res.Body).Decode(&post)).To(Succeed())
+			Expect(post.ID).To(Equal(uuid.MustParse("550e8400-e29b-41d4-a716-446655440001")))
+			Expect(post.Title).To(Equal("Getting Started with Go"))
+			Expect(post.Category).To(Equal("it"))
+		})
+
+		It("returns 404 for an unknown post", func() {
+			Expect(get(uuid.New().String())).To(HaveHTTPStatus(http.StatusNotFound))
+		})
+
+		It("returns 400 for an invalid id", func() {
+			Expect(get("not-a-uuid")).To(HaveHTTPStatus(http.StatusBadRequest))
 		})
 	})
 

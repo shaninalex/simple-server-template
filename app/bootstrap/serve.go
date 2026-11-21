@@ -21,8 +21,14 @@ func serveCmd(instance func() *Instance) *cobra.Command {
 			app := instance()
 			resolve := core.Resolve(func() *core.App { return app.Core })
 
+			metrics, err := middlewares.Metrics(app.Telemetry.MeterProvider())
+			if err != nil {
+				return err
+			}
+
 			router := httpx.NewServeMux()
 			router.Use(middlewares.Logging)
+			router.Use(metrics)
 			router.Use(middlewares.Recovery)
 			api.RegisterAPIControllers(router, resolve)
 			web.RegisterWebRoutes(router, resolve)

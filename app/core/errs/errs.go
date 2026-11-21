@@ -15,6 +15,29 @@ const (
 	KindPlatform
 )
 
+func (k Kind) String() string {
+	switch k {
+	case KindInternal:
+		return "internal"
+	case KindValidation:
+		return "validation"
+	case KindNotFound:
+		return "not_found"
+	case KindConflict:
+		return "conflict"
+	case KindForbidden:
+		return "forbidden"
+	case KindUnauthenticated:
+		return "unauthenticated"
+	case KindRateLimited:
+		return "rate_limited"
+	case KindPlatform:
+		return "platform"
+	default:
+		return "unknown"
+	}
+}
+
 type Error struct {
 	Kind    Kind
 	Code    string

@@ -78,3 +78,11 @@ func toDomain(r remotePost) domain.Post {
 		Published: r.Published,
 	}
 }
+
+func (s *Source) Get(ctx context.Context, id uuid.UUID) (domain.Post, error) {
+	var remote remotePost
+	if err := s.client.GetJSON(ctx, "/posts/"+url.PathEscape(id.String()), nil, &remote); err != nil {
+		return domain.Post{}, err
+	}
+	return toDomain(remote), nil
+}

@@ -38,12 +38,24 @@ func New(cfg Config) (inst *Instance, err error) {
 		}
 	}()
 
-	var write []bus.Middleware // TODO: add transaction middleware. Docs: https://go.dev/doc/database/execute-transactions
-	var read []bus.Middleware
+	mp := tel.MeterProvider()
+	commandMetrics, err := telemetry.BusMetrics(mp, telemetry.BusCommand)
+	if err != nil {
+		return nil, err
+	}
+	queryMetrics, err := telemetry.BusMetrics(mp, telemetry.BusQuery)
+	if err != nil {
+		return nil, err
+	}
+	eventMetrics, err := telemetry.BusMetrics(mp, telemetry.BusEvent)
+	if err != nil {
+		return nil, err
+	}
+
 	app := &core.App{
-		Commands: bus.NewCommandBus(write...),
-		Queries:  bus.NewQueryBus(read...),
-		Events:   bus.NewEventBus(),
+		Commands: bus.NewCommandBus(commandMetrics),
+		Queries:  bus.NewQueryBus(queryMetrics),
+		Events:   bus.NewEventBus(eventMetrics),
 	}
 
 	postsAPI, err := httpclient.New(httpclient.Config{

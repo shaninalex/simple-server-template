@@ -6,6 +6,7 @@ import (
 	"time"
 	"uuid"
 
+	"simple-server-template/app/core/errs"
 	"simple-server-template/app/modules/blog/internal/datasource/postapi"
 	"simple-server-template/app/modules/blog/internal/domain"
 	"simple-server-template/app/platform/httpclient"
@@ -82,6 +83,30 @@ var _ = Describe("Source", func() {
 			posts, err := source.List(context.Background(), 1000, 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(posts).To(ContainElement(HaveField("ID", created.ID)))
+		})
+	})
+
+	Describe("Get", func() {
+		It("returns the post by id", func() {
+			post, err := source.Get(context.Background(), "550e8400-e29b-41d4-a716-446655440001")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(post.ID).To(Equal(uuid.MustParse("550e8400-e29b-41d4-a716-446655440001")))
+			Expect(post.Title).To(Equal("Getting Started with Go"))
+			Expect(post.Category).To(Equal("it"))
+		})
+
+		It("returns a created post", func() {
+			created, err := source.Create(context.Background(), domain.Post{Title: "Fresh"})
+			Expect(err).NotTo(HaveOccurred())
+
+			post, err := source.Get(context.Background(), created.ID.String())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(post.Title).To(Equal("Fresh"))
+		})
+
+		It("reports a missing post as not found", func() {
+			_, err := source.Get(context.Background(), uuid.New().String())
+			Expect(errs.KindOf(err)).To(Equal(errs.KindNotFound))
 		})
 	})
 })
