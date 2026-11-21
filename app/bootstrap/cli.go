@@ -15,8 +15,11 @@ func NewCli() *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-			var err error
-			app, err = New()
+			cfg, err := LoadConfig()
+			if err != nil {
+				return fmt.Errorf("config: %w", err)
+			}
+			app, err = New(cfg)
 			return err
 		},
 	}

@@ -9,11 +9,11 @@ import (
 )
 
 func RegisterPostController(router *httpx.Mux, resolve core.Resolve) {
-	router.Handle("GET /api/posts", postList(resolve))
-	router.Handle("POST /api/posts", postCreate(resolve))
+	router.Handle("GET /api/posts", PostList(resolve))
+	router.Handle("POST /api/posts", PostCreate(resolve))
 }
 
-func postList(resolve core.Resolve) http.HandlerFunc {
+func PostList(resolve core.Resolve) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		posts, err := contract.AskPostList(r.Context(), resolve(), contract.PostList{
 			Limit:  10,
@@ -27,7 +27,7 @@ func postList(resolve core.Resolve) http.HandlerFunc {
 	})
 }
 
-func postCreate(resolve core.Resolve) http.HandlerFunc {
+func PostCreate(resolve core.Resolve) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		bindPayload, err := httpx.BindPayload(r, dto.PostDTO{})
 		if err != nil {

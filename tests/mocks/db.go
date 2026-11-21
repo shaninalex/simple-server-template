@@ -1,8 +1,8 @@
 package mocks
 
 import (
+	_ "embed"
 	"encoding/json"
-	"os"
 	"time"
 	"uuid"
 )
@@ -12,6 +12,7 @@ type Post struct {
 	AuthorID  uuid.UUID `json:"author_id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
+	Category  string    `json:"category"`
 	Thumbnail string    `json:"thumbnail"`
 	Published time.Time `json:"published"`
 	CreatedAt time.Time `json:"created_at"`
@@ -27,13 +28,12 @@ type DB struct {
 	Posts   []Post   `json:"posts"`
 }
 
+//go:embed data.json
+var data []byte
+
 func newDB() *DB {
-	b, err := os.ReadFile("./tests/mocks/data.json")
-	if err != nil {
-		panic(err)
-	}
 	var db DB
-	if err = json.Unmarshal(b, &db); err != nil {
+	if err := json.Unmarshal(data, &db); err != nil {
 		panic(err)
 	}
 	return &db

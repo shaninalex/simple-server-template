@@ -12,6 +12,7 @@
       "title": "Getting Started with Go",
       "content": "Go is a powerful and simple programming language designed for building efficient and scalable applications.",
       "thumbnail": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+      "category":"it",
       "published": "2026-11-18T10:30:00Z",
       "created_at": "2026-11-18T09:45:00Z"
     },
@@ -21,6 +22,7 @@
       "title": "Understanding REST API Architecture",
       "content": "REST APIs provide a standardized way for applications to communicate over HTTP using resources, methods, and status codes.",
       "thumbnail": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
+      "category": "it",
       "published": "2026-11-17T14:00:00Z",
       "created_at": "2026-11-17T12:20:00Z"
     },
@@ -30,6 +32,7 @@
       "title": "Docker for Beginners",
       "content": "Docker simplifies application deployment by packaging applications and their dependencies into portable containers.",
       "thumbnail": "https://images.unsplash.com/photo-1605742631739-6c7c7c1c9c9c",
+      "category": "it",
       "published": "2026-11-16T08:00:00Z",
       "created_at": "2026-11-16T07:30:00Z"
     },
@@ -39,6 +42,7 @@
       "title": "Why PostgreSQL Is a Great Choice",
       "content": "PostgreSQL is a robust open-source relational database known for reliability, extensibility, and powerful SQL capabilities.",
       "thumbnail": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d",
+      "category": "it",
       "published": "2026-11-15T16:45:00Z",
       "created_at": "2026-11-15T15:00:00Z"
     },
@@ -48,6 +52,7 @@
       "title": "Clean Code Principles",
       "content": "Writing clean code improves maintainability, readability, and collaboration. Small functions and meaningful names make a difference.",
       "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      "category":"infrastructure",
       "published": "2026-11-14T11:15:00Z",
       "created_at": "2026-11-14T10:00:00Z"
     },
@@ -57,6 +62,7 @@
       "title": "Introduction to Microservices",
       "content": "Microservices architecture allows applications to be built as a collection of independently deployable services.",
       "thumbnail": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
+      "category": "infrastructure",
       "published": "2026-11-13T09:00:00Z",
       "created_at": "2026-11-13T08:10:00Z"
     },
@@ -66,6 +72,7 @@
       "title": "Git Workflow Best Practices",
       "content": "A well-defined Git workflow helps teams collaborate efficiently through branches, pull requests, and code reviews.",
       "thumbnail": "https://images.unsplash.com/photo-1556075798-4825dfaaf3d2",
+      "category": "infrastructure",
       "published": "2026-11-12T13:30:00Z",
       "created_at": "2026-11-12T12:00:00Z"
     },
@@ -75,6 +82,7 @@
       "title": "Building Scalable Applications",
       "content": "Scalability requires thoughtful architecture, efficient resource usage, caching strategies, and proper monitoring.",
       "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      "category": "infrastructure",
       "published": "2026-11-11T17:00:00Z",
       "created_at": "2026-11-11T16:30:00Z"
     },
@@ -84,6 +92,7 @@
       "title": "Introduction to Kubernetes",
       "content": "Kubernetes automates container orchestration, allowing developers to deploy, scale, and manage containerized applications.",
       "thumbnail": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9",
+      "category": "infrastructure",
       "published": "2026-11-10T10:00:00Z",
       "created_at": "2026-11-10T09:20:00Z"
     },
@@ -93,6 +102,7 @@
       "title": "The Importance of Unit Testing",
       "content": "Unit tests help identify bugs early, ensure expected behavior, and make refactoring safer and more predictable.",
       "thumbnail": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+      "category": "infrastructure",
       "published": "2026-11-09T12:00:00Z",
       "created_at": "2026-11-09T11:00:00Z"
     }

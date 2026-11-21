@@ -8,7 +8,6 @@ import (
 	"simple-server-template/app/core/bus"
 	"simple-server-template/app/platform/clock"
 	"simple-server-template/app/platform/httpclient"
-	"time"
 )
 
 // Instance - is the application instance. It links everything together
@@ -20,7 +19,7 @@ type Instance struct {
 	modules []core.Module
 }
 
-func New() (*Instance, error) {
+func New(cfg Config) (*Instance, error) {
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	clk := clock.System()
 
@@ -33,11 +32,11 @@ func New() (*Instance, error) {
 		Events:   bus.NewEventBus(),
 	}
 
-	// ======= Remote datasources =======
+	// ======= Remote data sources =======
 	postsAPI, err := httpclient.New(httpclient.Config{
-		BaseURL:   "https://jsonplaceholder.typicode.com",
-		Timeout:   5 * time.Second,
-		Retries:   2,
+		BaseURL:   cfg.PostsAPI.BaseURL,
+		Timeout:   cfg.PostsAPI.Timeout,
+		Retries:   cfg.PostsAPI.Retries,
 		UserAgent: "simple-server-template",
 	})
 	if err != nil {
