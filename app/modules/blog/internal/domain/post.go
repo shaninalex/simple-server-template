@@ -2,11 +2,10 @@ package domain
 
 import (
 	"time"
-	"uuid"
 )
 
 type Post struct {
-	ID        uuid.UUID
+	ID        string
 	Title     string
 	Content   string
 	Thumbnail string

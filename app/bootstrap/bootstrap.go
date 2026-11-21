@@ -7,9 +7,11 @@ import (
 	"simple-server-template/app/core"
 	"simple-server-template/app/core/bus"
 	"simple-server-template/app/platform/clock"
+	"simple-server-template/app/platform/httpclient"
+	"time"
 )
 
-// Instance - is the application instance. It links everything togather
+// Instance - is the application instance. It links everything together
 type Instance struct {
 	Core  *core.App
 	Log   *slog.Logger
@@ -31,8 +33,19 @@ func New() (*Instance, error) {
 		Events:   bus.NewEventBus(),
 	}
 
+	// ======= Remote datasources =======
+	postsAPI, err := httpclient.New(httpclient.Config{
+		BaseURL:   "https://jsonplaceholder.typicode.com",
+		Timeout:   5 * time.Second,
+		Retries:   2,
+		UserAgent: "simple-server-template",
+	})
+	if err != nil {
+		return nil, fmt.Errorf("posts api client: %w", err)
+	}
+
 	// modules
-	modules, err := buildModules(buildModulesDeps{log, clk})
+	modules, err := buildModules(buildModulesDeps{log, clk, postsAPI})
 	if err != nil {
 		panic(err)
 	}

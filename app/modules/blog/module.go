@@ -5,13 +5,16 @@ import (
 	"log/slog"
 	"simple-server-template/app/core"
 	"simple-server-template/app/core/bus"
+	"simple-server-template/app/modules/blog/internal/datasource/postapi"
 	"simple-server-template/app/modules/blog/internal/handlers"
 	"simple-server-template/app/platform/clock"
+	"simple-server-template/app/platform/httpclient"
 )
 
 type Deps struct {
-	Log   *slog.Logger
-	Clock clock.Clock
+	Log      *slog.Logger
+	Clock    clock.Clock
+	PostsAPI *httpclient.Client
 }
 
 type Module struct {
@@ -22,11 +25,13 @@ type Module struct {
 }
 
 func New(d Deps) *Module {
+	posts := postapi.New(d.PostsAPI)
+
 	return &Module{
 		deps: d,
 
 		// queries
-		postList: handlers.NewPostList(),
+		postList: handlers.NewPostList(posts),
 	}
 }
 

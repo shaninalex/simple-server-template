@@ -3,11 +3,10 @@ package dto
 import (
 	"simple-server-template/app/modules/blog/contract"
 	"time"
-	"uuid"
 )
 
 type PostDTO struct {
-	ID        uuid.UUID `json:"id"`
+	ID        string    `json:"id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	Thumbnail string    `json:"thumbnail"`

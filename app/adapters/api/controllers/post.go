@@ -19,7 +19,7 @@ func postList(resolve core.Resolve) http.HandlerFunc {
 			Offset: 0,
 		})
 		if err != nil {
-			httpx.ErrorResponse(w, 400, err)
+			httpx.ErrorResponse(w, httpx.StatusFromError(err), err)
 			return
 		}
 		httpx.JSONResponse(w, 200, dto.ToPostDTOList(posts))
