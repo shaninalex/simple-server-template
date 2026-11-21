@@ -4,16 +4,21 @@ import (
 	"context"
 	"net/url"
 	"strconv"
+	"time"
+	"uuid"
 
 	"simple-server-template/app/modules/blog/internal/domain"
 	"simple-server-template/app/platform/httpclient"
 )
 
 type remotePost struct {
-	ID     int64  `json:"id"`
-	UserID int64  `json:"userId"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
+	ID        uuid.UUID `json:"id"`
+	AuthorID  uuid.UUID `json:"author_id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Thumbnail string    `json:"thumbnail"`
+	CreatedAt time.Time `json:"created_at"`
+	Published time.Time `json:"published"`
 }
 
 type Source struct {
@@ -43,8 +48,8 @@ func (s *Source) List(ctx context.Context, limit, offset int) ([]domain.Post, er
 
 func toDomain(r remotePost) domain.Post {
 	return domain.Post{
-		ID:      strconv.FormatInt(r.ID, 10),
+		ID:      r.ID,
 		Title:   r.Title,
-		Content: r.Body,
+		Content: r.Content,
 	}
 }

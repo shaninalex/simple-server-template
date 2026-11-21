@@ -22,6 +22,9 @@ type Module struct {
 
 	// queries
 	postList *handlers.PostList
+
+	// commands
+	postCreate *handlers.CreatePost
 }
 
 func New(d Deps) *Module {
@@ -32,6 +35,9 @@ func New(d Deps) *Module {
 
 		// queries
 		postList: handlers.NewPostList(posts),
+
+		// commands
+		postCreate: handlers.NewCreatePost(posts),
 	}
 }
 
@@ -40,5 +46,6 @@ func (m *Module) Name() string { return "blog" }
 func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterQuery(a.Queries, m.postList.Handle),
+		bus.RegisterCommand(a.Commands, m.postCreate.Handle),
 	)
 }

@@ -10,6 +10,7 @@ import (
 
 func RegisterPostController(router *httpx.Mux, resolve core.Resolve) {
 	router.Handle("GET /api/posts", postList(resolve))
+	router.Handle("POST /api/posts", postCreate(resolve))
 }
 
 func postList(resolve core.Resolve) http.HandlerFunc {
@@ -23,5 +24,23 @@ func postList(resolve core.Resolve) http.HandlerFunc {
 			return
 		}
 		httpx.JSONResponse(w, 200, dto.ToPostDTOList(posts))
+	})
+}
+
+func postCreate(resolve core.Resolve) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		bindPayload, err := httpx.BindPayload(r, dto.PostDTO{})
+		if err != nil {
+			httpx.ErrorResponse(w, 400, err)
+			return
+		}
+		post, err := contract.ExecCreatePost(r.Context(), resolve(), contract.CreatePost{
+			Post: dto.ToPostView(*bindPayload),
+		})
+		if err != nil {
+			httpx.ErrorResponse(w, httpx.StatusFromError(err), err)
+			return
+		}
+		httpx.JSONResponse(w, 200, post)
 	})
 }
